@@ -1,0 +1,8 @@
+#Excluir
+#Executables
+*.exe
+
+# Object files
+*.obj
+
+*.tds
