@@ -11,7 +11,6 @@ struct Tarea{
 
 void mostrarUnaTarea(Tarea *tarea);
 void mostrarTareas(Tarea *tareas, int cant);
-Tarea *buscarTareaPorId(Tarea** TareasP, int cant, int id);
 Tarea *buscarTareaPorPalabra(Tarea **TareaP, int cant, char *palabra);
 
 int main(){
@@ -71,6 +70,12 @@ int main(){
     printf("\n Tareas Pendientes: \n");
     mostrarTareas(tareaRealizadas, cantTareas);
 
+    printf("\n Ingresar palabra de tarea pendiente a buscar: ");
+    gets(palabra);
+    tarea = buscarTareaPorPalabra(tareasPendientes, cantTareas, palabra);
+    printf("\n -- Tarea Encontrada: --");
+    mostrarTarea(tarea);
+    
     return 0;
 
 }
@@ -84,11 +89,22 @@ void mostrarTarea(Tarea *tarea){
 void mostrarTareas(Tarea *tareas, int cant){
     for (int i = 0; i < cant; i++)
     {
-        if (tareas[i] != NULL){
+        if (tareas != NULL){
             printf("\n--------Tarea Realizada [%d]--------", i+1);
             printf("\nTareaId: %d", tareas[i].TareaId);
             printf(" \nDuracion %i", tareas[i].Duracion);
             printf("\nDescripcion: %s", tareas[i].Descripcion);
         }
     }
+}
+Tarea * buscarTareaPorPalabra(Tarea **TareaP, int cant, char *palabra){
+    for (int i = 0; i < cant; i++)
+    {
+        if (strstr(*TareaP[i]->Descripcion, palabra) != NULL)
+        {
+            return (TareaP[i]);
+        }
+        
+    }
+    return NULL;
 }
