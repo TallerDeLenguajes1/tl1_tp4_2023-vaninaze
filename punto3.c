@@ -135,12 +135,18 @@ int main(){
         printf("\n Desea modificar alguna tarea? 1-SI, 0-NO: ");
         scanf("%i", &modifica);
     }
-    printf("\n --LISTA TAREAS PENDIENTES--");
+    printf("\n ---LISTA TAREAS PENDIENTES---");
     mostrarLista(ListaPen);
-    printf("\n --LISTA TAREAS REALIZADAS--");
+    printf("\n --DATOS DE LISTA TAREAS PENDIENTES--");
+    mostrarDatos(ListaPen);
+    printf("\n ---LISTA TAREAS REALIZADAS---");
     mostrarLista(ListaReal);
-    printf("\n --LISTA TAREAS EN PROCESO--");
+    printf("\n --DATOS DE LISTA TAREAS REALIZADAS--");
+    mostrarDatos(ListaReal);
+    printf("\n ---LISTA TAREAS EN PROCESO---");
     mostrarLista(ListaTareasEnProceso);
+    printf("\n --DATOS DE LISTA TAREAS EN PROCESO--");
+    mostrarDatos(ListaTareasEnProceso);
     return 0;
 }
 Nodo *crearLista(){
