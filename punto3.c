@@ -8,24 +8,25 @@ struct Tarea{
     char *Descripcion; //
     int Duracion; // entre 10 – 100
 }typedef Tarea;
-struct Nodo{
+struct nodo{
     Tarea T;
-    struct Nodo *siguiente;
-}typedef *Nodo;
+    struct nodo *siguiente;
+} typedef Nodo;
 
-Nodo crearLista();
-Nodo crearNodo(Tarea *tarea);
+Nodo *crearLista();
+Nodo *crearNodo(Tarea *tarea);
 Tarea *cargarTarea(int indice);
-void insertarNodo(Nodo *lista, Tarea *tarea);
-void mostrarLista(Nodo lista);
-void eliminarTarea(Nodo *lista, int id); //elimina un nodo
-void mostrarDatos(Nodo lista);
-int longLista(Nodo lista);
+void insertarNodo(Nodo **lista, Tarea *tarea);
+void mostrarLista(Nodo *lista);
+void eliminarTarea(Nodo **lista, int id); //elimina un nodo
+void mostrarDatos(Nodo *lista);
+int longLista(Nodo *lista);
 
 int main(){
-    Nodo ListaPen, ListaReal, ListaTareasEnProceso, nodo;
-    Tarea *tarea;
-    int aux, indice=0;
+    Nodo *ListaPen, *ListaReal, *ListaTareasEnProceso, *nodo;
+    Tarea *tarea = malloc(sizeof(Tarea));
+    tarea->Descripcion = malloc(sizeof(char)*50);
+    int aux, i=0;
     ListaPen = crearLista();
     ListaReal = crearLista();
     ListaTareasEnProceso = crearLista();
@@ -35,21 +36,22 @@ int main(){
     scanf("%i", &aux);
     while (aux != 0)
     {
-        tarea = cargarTarea(indice);
+        tarea = cargarTarea(i);
         insertarNodo(&ListaPen, tarea);
-        printf("\n Desea cargar otra tarea? 1-SI, 0-NO: ");
+
+        i++;
+        printf("\n Desea cargar una tarea? 1-SI, 0-NO: ");
         scanf("%i", &aux);
-        indice++;
     }
     mostrarLista(ListaPen);
 
     return 0;
 }
-Nodo crearLista(){
+Nodo *crearLista(){
     return NULL;
 }
-Nodo crearNodo(Tarea *tarea){
-    Nodo nodo;
+Nodo *crearNodo(Tarea *tarea){
+    Nodo *nodo;
     nodo = malloc(sizeof(Nodo));
     nodo->T = *tarea;
     nodo->siguiente = NULL;
@@ -57,7 +59,7 @@ Nodo crearNodo(Tarea *tarea){
 }
 Tarea *cargarTarea(int indice){
     Tarea *tarea;
-    tarea = malloc(sizeof(Tarea));
+    tarea = (Tarea *)malloc(sizeof(Tarea));
     tarea->Descripcion = (char *)malloc(sizeof(char)*100);
     printf("\n Ingresar descripcion: ");
     fflush(stdin);
@@ -66,15 +68,15 @@ Tarea *cargarTarea(int indice){
     tarea->Duracion = rand()%91+10;
     return tarea;
 }
-void insertarNodo(Nodo *lista, Tarea *tarea){
-    Nodo nodo;
+void insertarNodo(Nodo **lista, Tarea *tarea){
+    Nodo *nodo;
     nodo = crearNodo(tarea);
     nodo->siguiente = *lista;
     *lista = nodo;
 }
-void eliminarTarea(Nodo *lista, int id){ //elimina el nodo
-    Nodo actual = *lista;
-    Nodo anterior = *lista;
+void eliminarTarea(Nodo **lista, int id){ //elimina el nodo
+    Nodo *actual = *lista;
+    Nodo *anterior = *lista;
     while (actual != NULL && actual->T.TareaID != id)
     {
         anterior = actual;
@@ -85,8 +87,8 @@ void eliminarTarea(Nodo *lista, int id){ //elimina el nodo
         free(actual);
     }
 }
-void mostrarLista(Nodo lista){
-    Nodo aux = lista;
+void mostrarLista(Nodo *lista){
+    Nodo *aux = lista;
     int i=0, cant;
     cant = longLista(lista);
     while (aux != NULL && i<cant)
@@ -98,8 +100,8 @@ void mostrarLista(Nodo lista){
         aux = aux->siguiente;
     }    
 }
-void mostrarDatos(Nodo lista){
-    Nodo aux = lista;
+void mostrarDatos(Nodo *lista){
+    Nodo *aux = lista;
     int cant, i=0;
     float tiempo=0;
     cant = longLista(lista);
@@ -116,8 +118,8 @@ void mostrarDatos(Nodo lista){
         printf("\n La lista esta vacia");
     }
 }
-int longLista(Nodo lista){
-    Nodo aux = lista;
+int longLista(Nodo *lista){
+    Nodo *aux = lista;
     int cant=0;
     while (aux != NULL)
     {
