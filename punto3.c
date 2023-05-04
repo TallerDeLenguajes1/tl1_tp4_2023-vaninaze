@@ -93,6 +93,7 @@ Tarea *cargarTarea(int i){
     gets(tarea->descripcion);
     tarea->duracion = rand()%91+10;
     tarea->tareaID = i+1;
+    return tarea;
 }
 void insertarInicio(Nodo **lista, Tarea *tarea){
     Nodo *nodo;
