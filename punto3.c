@@ -22,10 +22,15 @@ void mostrarLista(Nodo **listaP, Nodo **listaR);
 Nodo *quitarNodo(Nodo **lista, Nodo *nodo);
 void insertarNodo(Nodo **lista, Nodo *nodo);
 void mostrarTareas(Nodo *lista);
+
+Nodo *buscarTareaPorID(Nodo *lista, int id);
+Nodo *buscarTareaPorPalabra(Nodo *lista, char *palabra);
+void mostrarTarea(Tarea tarea);
 int main(){
-    Nodo *ListaPen, *ListaReal;
+    Nodo *ListaPen, *ListaReal, *nodo_tarea;
     Tarea *tarea;
     int aux, i=0;
+    char *palabra = malloc(sizeof(char)*20);
     ListaPen = crearLista();
     ListaReal = crearLista();
 
@@ -45,6 +50,28 @@ int main(){
     mostrarTareas(ListaPen);
     printf("\n--- LISTA DE TAREAS REALIZADAS ---");
     mostrarTareas(ListaReal);
+
+    printf("\n Ingresar ID de tarea a buscar: ");
+    scanf("%i", &i);
+    if (buscarTareaPorID(ListaPen, i) != NULL)
+    {
+        nodo_tarea = buscarTareaPorID(ListaPen, i);
+        printf("\n Tarea encontrada: ");
+        mostrarTarea(nodo_tarea->T);
+    } else {
+        printf("\n Tarea no encontrada. \n ");
+    }
+    printf("\n Ingresar palabra a buscar en una tarea: ");
+    fflush(stdin);
+    gets(palabra);
+    if (buscarTareaPorPalabra(ListaPen, palabra) != NULL)
+    {
+        nodo_tarea = buscarTareaPorPalabra(ListaPen, palabra);
+        printf("\n Tarea encontrada. \n ");
+        mostrarTarea(nodo_tarea->T);
+    } else {
+        printf("\n Tarea no encontrada: ");
+    }
     return 0;
 }
 
@@ -72,6 +99,12 @@ void insertarInicio(Nodo **lista, Tarea *tarea){
     nodo = crearNodo(tarea);
     nodo->siguiente = *lista;
     *lista = nodo;
+}
+void mostrarTarea(Tarea tarea){
+    printf("\n Tarea id: %i", tarea.tareaID);
+    printf("\n Duracion: %i", tarea.duracion);
+    printf("\n Descripcion: ");
+    puts(tarea.descripcion);
 }
 void mostrarLista(Nodo **listaP, Nodo **listaR){
     Nodo *actual, *nodo;
@@ -124,12 +157,36 @@ void insertarNodo(Nodo **lista, Nodo *nodo){
 }
 void mostrarTareas(Nodo *lista){
     Nodo *aux = lista;
-    while (lista != NULL)
+    while (aux != NULL)
     {
         printf("\n Tarea id: %i", aux->T.tareaID);
         printf("\n Duracion: %i", aux->T.duracion);
         printf("\n Descripcion: ");
         puts(aux->T.descripcion);
-        lista = lista->siguiente;
+        aux = aux->siguiente;
     }    
+}
+Nodo *buscarTareaPorID(Nodo *lista, int id){
+    Nodo *aux = lista;
+    while (aux != NULL && aux->T.tareaID != id)
+    {
+        aux = aux->siguiente;
+    }
+    if (aux)
+    {
+        return aux;
+    }
+    return NULL;
+}
+Nodo *buscarTareaPorPalabra(Nodo *lista, char *palabra){
+    Nodo *aux = lista;
+    while (aux != NULL && strstr(aux->T.descripcion, palabra) == NULL)
+    {
+        aux = aux->siguiente;
+    }
+    if (aux)
+    {
+        return (aux);
+    }
+    return NULL;
 }
