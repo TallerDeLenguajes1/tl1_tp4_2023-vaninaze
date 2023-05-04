@@ -17,8 +17,10 @@ Nodo *crearLista();
 Nodo *crearNodo(Tarea *tarea);
 Tarea *cargarTarea(int indice);
 void insertarNodo(Nodo **lista, Tarea *tarea);
+void insertarNodoInicio(Nodo **lista, Nodo *nodo);
 void mostrarLista(Nodo *lista);
-void eliminarTarea(Nodo **lista, int id); //elimina un nodo
+Nodo *quitarNodo(Nodo **lista, int id);
+void eliminarTarea(Nodo **lista, Nodo *nodo); //elimina un nodo
 void mostrarDatos(Nodo *lista);
 int longLista(Nodo *lista);
 
@@ -26,7 +28,9 @@ int main(){
     Nodo *ListaPen, *ListaReal, *ListaTareasEnProceso, *nodo;
     Tarea *tarea = malloc(sizeof(Tarea));
     tarea->Descripcion = malloc(sizeof(char)*50);
-    int aux, i=0;
+    
+    int aux, i=0, modifica, id, opcion, mover;
+
     ListaPen = crearLista();
     ListaReal = crearLista();
     ListaTareasEnProceso = crearLista();
@@ -43,8 +47,100 @@ int main(){
         printf("\n Desea cargar una tarea? 1-SI, 0-NO: ");
         scanf("%i", &aux);
     }
+    printf("\n Desea modificar alguna tarea? 1-SI, 0-NO: ");
+    scanf("%i", &modifica);
+    while (modifica != 0)
+    {
+        printf("\n --LISTA TAREAS PENDIENTES--");
+        mostrarLista(ListaPen);
+        printf("\n --LISTA TAREAS REALIZADAS--");
+        mostrarLista(ListaReal);
+        printf("\n --LISTA TAREAS EN PROCESO--");
+        mostrarLista(ListaTareasEnProceso);
+        
+        printf("\n En cual lista desea realizar cambios? 1-Pend, 2-Real, 3-En Proc: ");
+        scanf("%i", &aux);
+        printf("\n Ingresar ID de la tarea: ");
+        scanf("%i", &id);
+        printf("\n Desea: 1-Mover tarea, 2-Eliminar tarea de la lista, 3-No hacer nada:  ");
+        scanf("%i", &opcion);
+        if (opcion == 1)
+        {   
+            switch (aux) //segun la lista elijo la otra
+            {
+                case 1:
+                    printf("\n A que lista desea mover? 2-Real, 3-En Proc: ");
+                    scanf("%i", &mover);
+                    break;
+                case 2:
+                    printf("\n A que lista desea mover? 1-Pend, 3-En Proc: ");
+                    scanf("%i", &mover);
+                    break;
+                case 3:
+                    printf("\n A que lista desea mover? 1-Pend, 2-Real: ");
+                    scanf("%i", &mover);
+                    break;
+                default:
+                    break;
+            }
+        }
+    
+        switch (aux) //en que lista quiere realizar cambios
+        {
+            case 1: //lista de pendientes
+                nodo = quitarNodo(&ListaPen, id);
+                if (opcion == 1) //muevo tarea
+                {
+                    if (mover = 2) //mover a realizadas
+                    {
+                        insertarNodoInicio(&ListaReal, nodo);
+                    }else if(mover = 3){ //mover a en proceso
+                        insertarNodoInicio(&ListaTareasEnProceso, nodo);
+                    }
+                } else if(opcion == 2){ //elimino tarea
+                    eliminarTarea(&ListaPen, nodo);
+                }
+                break;
+            case 2: //lista de realizadas
+                nodo = quitarNodo(&ListaReal, id);/* code */
+                if (opcion == 1) //muevo tarea
+                {
+                    if (mover = 1) //mover a pendientes
+                    {
+                        insertarNodoInicio(&ListaPen, nodo);
+                    }else if(mover = 3){ //mover a en proceso
+                        insertarNodoInicio(&ListaTareasEnProceso, nodo);
+                    }
+                } else if(opcion == 2){ //elimino tarea
+                    eliminarTarea(&ListaReal, nodo);
+                }
+                break;
+            case 3: //lista de tareas en proceso
+                nodo = quitarNodo(&ListaTareasEnProceso, id);
+                if (opcion == 1) //muevo tarea
+                {
+                    if (mover = 1) //mover a pendientes
+                    {
+                        insertarNodoInicio(&ListaPen, nodo);
+                    }else if(mover = 2){ //mover a realizadas
+                        insertarNodoInicio(&ListaReal, nodo);
+                    }
+                } else if(opcion == 2){ //elimino tarea
+                    eliminarTarea(&ListaTareasEnProceso, nodo);
+                }
+                break;
+            default:
+                break;
+        }
+        printf("\n Desea modificar alguna tarea? 1-SI, 0-NO: ");
+        scanf("%i", &modifica);
+    }
+    printf("\n --LISTA TAREAS PENDIENTES--");
     mostrarLista(ListaPen);
-
+    printf("\n --LISTA TAREAS REALIZADAS--");
+    mostrarLista(ListaReal);
+    printf("\n --LISTA TAREAS EN PROCESO--");
+    mostrarLista(ListaTareasEnProceso);
     return 0;
 }
 Nodo *crearLista(){
@@ -74,10 +170,33 @@ void insertarNodo(Nodo **lista, Tarea *tarea){
     nodo->siguiente = *lista;
     *lista = nodo;
 }
-void eliminarTarea(Nodo **lista, int id){ //elimina el nodo
+void insertarNodoInicio(Nodo **lista, Nodo *nodo){
+    nodo->siguiente = *lista;
+    *lista = nodo;
+}
+Nodo *quitarNodo(Nodo **lista, int id){
     Nodo *actual = *lista;
     Nodo *anterior = *lista;
     while (actual != NULL && actual->T.TareaID != id)
+    {
+        anterior = actual;
+        actual = actual->siguiente;
+    }
+    if(actual){ //encontre el nodo, debo desconectarlo
+        if (actual == *lista) //la lista tiene un solo elem
+        {
+            *lista = actual->siguiente;
+        } else {
+            anterior->siguiente = actual->siguiente;
+        }
+        actual->siguiente = NULL;
+    }
+    return actual;
+}
+void eliminarTarea(Nodo **lista, Nodo *nodo){ //elimina el nodo
+    Nodo *actual = *lista;
+    Nodo *anterior = *lista;
+    while (actual != NULL && actual != nodo)
     {
         anterior = actual;
         actual = actual->siguiente;
@@ -91,14 +210,19 @@ void mostrarLista(Nodo *lista){
     Nodo *aux = lista;
     int i=0, cant;
     cant = longLista(lista);
-    while (aux != NULL && i<cant)
+    if (aux == NULL)
     {
-        printf("\n Tarea ID: %i", aux->T.TareaID);
-        printf("\n Duracion: %i", aux->T.Duracion);
-        printf("\n Descripcion: ");
-        puts(aux->T.Descripcion);
-        aux = aux->siguiente;
-    }    
+        printf("\n La lista esta vacia");
+    } else {
+        while (aux != NULL && i<cant)
+        {
+            printf("\n Tarea ID: %i", aux->T.TareaID);
+            printf("\n Duracion: %i", aux->T.Duracion);
+            printf("\n Descripcion: ");
+            puts(aux->T.Descripcion);
+            aux = aux->siguiente;
+        }  
+    }  
 }
 void mostrarDatos(Nodo *lista){
     Nodo *aux = lista;
